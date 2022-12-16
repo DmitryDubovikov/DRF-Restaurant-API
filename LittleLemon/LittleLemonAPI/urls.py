@@ -14,8 +14,11 @@ urlpatterns = [
     path('category/', views.CategoryViewSet.as_view({'get': 'list', 'post': 'create'})),
     path('category/<int:pk>/', views.CategoryViewSet.as_view({'get': 'retrieve'})), 
     
-#     path('groups/', views.GroupViewSet.as_view({'get': 'list'})),
-#     path('groups/<int:pk>/', views.GroupViewSet.as_view({'get': 'retrieve'})),  
+    path('groups/manager/users/', views.manager),
     
+    path('groups/delivery-crew/users/', views.delivery_crew),
+    
+#     path('groups/', views.GroupViewSet.as_view({'get': 'list'})),
+#     path('groups/<int:pk>/', views.GroupViewSet.as_view({'get': 'retrieve'})),     
 #     path('cart/menu-items/', views.CartList.as_view()),
 ]
