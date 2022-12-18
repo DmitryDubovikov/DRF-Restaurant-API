@@ -15,8 +15,12 @@ urlpatterns = [
     path('category/<int:pk>/', views.CategoryViewSet.as_view({'get': 'retrieve'})), 
     
     path('groups/manager/users/', views.manager),
+    path('groups/manager/users/<int:pk>/', views.manager),
     
     path('groups/delivery-crew/users/', views.delivery_crew),
+    path('groups/delivery-crew/users/<int:pk>/', views.delivery_crew),
+
+    path('cart/menu-items/', views.cart),
     
 #     path('groups/', views.GroupViewSet.as_view({'get': 'list'})),
 #     path('groups/<int:pk>/', views.GroupViewSet.as_view({'get': 'retrieve'})),     
