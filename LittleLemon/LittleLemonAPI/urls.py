@@ -22,6 +22,8 @@ urlpatterns = [
 
     path('cart/menu-items/', views.cart),
     
+    path('orders/', views.orders),
+    
 #     path('groups/', views.GroupViewSet.as_view({'get': 'list'})),
 #     path('groups/<int:pk>/', views.GroupViewSet.as_view({'get': 'retrieve'})),     
 #     path('cart/menu-items/', views.CartList.as_view()),
