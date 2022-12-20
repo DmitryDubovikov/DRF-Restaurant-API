@@ -16,15 +16,28 @@ class MenuItemsViewSet(viewsets.ModelViewSet):
     queryset = MenuItem.objects.all()  # NB: queries are lazy, thus all() is ok
     serializer_class = MenuItemSerializer
     
+    ordering_fields = ['price']
+    filterset_fields = ['price', 'category']
+    search_fields = ['title']
+    
+    def get_permissions(self):
+        if (self.request.method=='GET'):
+            return []
+        elif self.request.method in ['POST', 'PUT', 'PATCH', 'DELETE'] and not self.request.user.groups.filter(name='Manager').exists():
+            return [permissions.IsAdminUser()]  # cannot return false
+        return [permissions.IsAuthenticated()]
+        
+    
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()  # NB: queries are lazy, thus all() is ok
     serializer_class = CategorySerializer
     
     def get_permissions(self):
-        return []
-        # if (self.request.method=='GET'):
-        #     return []
-        # return [permissions.IsAdminUser()]
+        if (self.request.method=='GET'):
+            return []
+        elif self.request.method in ['POST', 'PUT', 'PATCH', 'DELETE'] and not self.request.user.groups.filter(name='Manager').exists():
+            return [permissions.IsAdminUser()]  # cannot return false
+        return [permissions.IsAuthenticated()]
         
 class CartViewSet(viewsets.ModelViewSet):
     queryset = Cart.objects.all()  
@@ -138,5 +151,51 @@ def orders(request):
     
     elif request.method == 'DELETE':
         pass
+    
+    
+@api_view(['GET', 'PATCH', 'DELETE'])
+@permission_classes([permissions.IsAuthenticated])
+def order_detail(request, pk=None):  
+    
+    # if request.method == 'PUT':
+    #     if request.user.groups.filter(name='Manager').exists():
+    #         pass
+    #     else:
+    #         return Response({'message': f'you are not authorized to modify order {pk}'}, status.HTTP_401_UNAUTHORIZED)
+        
+    if request.method == 'PATCH':
+        if request.user.groups.filter(name='Manager').exists():
+            order = Order.objects.get(pk=pk)
+            order.status = False if request.data['status']=='0' else True
+            order.delivery_crew_id = int(request.data['delivery_crew'])
+            order.save()
+            return Response({'message': f'status is {order.status} and deilvery is {order.delivery_crew_id} for order {pk}'}, status.HTTP_200_OK)
+        elif request.user.groups.filter(name='Delivery crew').exists():
+            order = Order.objects.get(pk=pk)
+            order.status = False if request.data['status']=='0' else True
+            order.save()
+            return Response({'message': f'status is set to {order.status} for order {pk}'}, status.HTTP_200_OK)
+        else:
+            return Response({'message': f'you are not authorized to modify order {pk}'}, status.HTTP_401_UNAUTHORIZED)
+        
+    elif request.method == 'GET':
+        # if customer and it is not his order - display error, else - show order items
+        order = Order.objects.get(pk=pk)
+        if not request.user.groups.filter(name='Manager').exists() \
+            and not request.user.groups.filter(name='Delivery crew').exists() \
+            and not request.user.id==order.user_id \
+            or (request.user.groups.filter(name='Delivery crew').exists() and not order.delivery_crew_id==request.user.id):
+            return Response({'message': f'you are not authorized to view order {pk}'}, status.HTTP_401_UNAUTHORIZED)
+        else:
+            order_items = OrderItem.objects.filter(order_id=order.id)
+            return Response({'order items': order_items.values()}, status.HTTP_200_OK)
+        
+    elif request.method == 'DELETE':
+        if request.user.groups.filter(name='Manager').exists():
+            order = Order.objects.get(pk=pk)
+            order.delete()
+            return Response({'message': f'order {pk} was deleted'}, status.HTTP_200_OK)
+        else:
+            return Response({'message': f'only managers can delete orders'}, status.HTTP_401_UNAUTHORIZED)            
     
     

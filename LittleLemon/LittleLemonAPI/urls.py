@@ -4,7 +4,7 @@ from LittleLemonAPI import views
 urlpatterns = [
     
     path('menu-items/', views.MenuItemsViewSet.as_view(
-        {'get': 'list', 'post': 'create'}
+        {'get': 'list', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}
         )),
     
     path('menu-items/<int:pk>/', views.MenuItemsViewSet.as_view(
@@ -23,8 +23,6 @@ urlpatterns = [
     path('cart/menu-items/', views.cart),
     
     path('orders/', views.orders),
-    
-#     path('groups/', views.GroupViewSet.as_view({'get': 'list'})),
-#     path('groups/<int:pk>/', views.GroupViewSet.as_view({'get': 'retrieve'})),     
-#     path('cart/menu-items/', views.CartList.as_view()),
+    path('orders/<int:pk>/', views.order_detail),
+
 ]
