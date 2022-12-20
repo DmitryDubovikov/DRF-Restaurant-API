@@ -10,14 +10,17 @@ from rest_framework import generics, permissions, viewsets, status
 from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
 import datetime
 
 class MenuItemsViewSet(viewsets.ModelViewSet):
     queryset = MenuItem.objects.all()  # NB: queries are lazy, thus all() is ok
     serializer_class = MenuItemSerializer
     
-    ordering_fields = ['price']
+    filter_backends = [DjangoFilterBackend]
     filterset_fields = ['price', 'category']
+    
+    ordering_fields = ['price']
     search_fields = ['title']
     
     def get_permissions(self):

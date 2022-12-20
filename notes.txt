@@ -1,0 +1,66 @@
+superuser admin password 1
+see also /secrets/tokens
+
+TESTING:
+
+See secrets/tokens file to get tokens to test endpoints properly
+1.	The admin can assign users to the manager group
+POST request to http://127.0.0.1:8000/api/groups/manager/users/ with admin token and request data {‘username’: ‘MikeManager’}
+
+2.	You can access the manager group with an admin token
+GET request to http://127.0.0.1:8000/api/groups/manager/users with admin token
+
+3.	The admin can add menu items 
+POST request to http://127.0.0.1:8000/api/menu-items/ with proper request data
+
+4.	The admin can add categories
+POST request to http://127.0.0.1:8000/api/category/  with proper request data
+
+5.	Managers can log in 
+
+6.	Managers can update the item of the day
+POST request to http://127.0.0.1:8000/api/menu-items/1/ with request data {‘featured’: True}
+
+7.	Managers can assign users to the delivery crew
+POST request to http://127.0.0.1:8000/api/groups/delivery-crew/users/  {‘username’: ‘DeborahDelivery’}
+
+8.	Managers can assign orders to the delivery crew
+PATCH request to http://127.0.0.1:8000/api/orders/15/ with request data {‘ delivery_crew’: 3}
+
+9.	The delivery crew can access orders assigned to them
+GET request to http://127.0.0.1:8000/api/orders/ 
+GET request to http://127.0.0.1:8000/api/orders/15/ 
+
+10.	The delivery crew can update an order as delivered
+PATCH request to http://127.0.0.1:8000/api/orders/15/ with request data {‘ status’: 1}
+
+11.	Customers can register
+POST request to http://127.0.0.1:8000/api/token/login/ with request data: username and password
+12.	Customers can log in using their username and password and get access tokens
+POST request to http://127.0.0.1:8000/api/token/login/ with request data: username and password
+
+13.	Customers can browse all categories 
+GET request to http://127.0.0.1:8000/api/category/ 
+
+14.	Customers can browse all the menu items at once
+GET request to http://127.0.0.1:8000/api/menu-items/ 
+
+15.	Customers can browse menu items by category
+GET request to http://127.0.0.1:8000/api/menu-items/?category=1 
+
+16.	Customers can paginate menu items
+GET request to http://127.0.0.1:8000/api/menu-items/?ordering=price&page=2 
+
+17.	Customers can sort menu items by price
+GET request to http://127.0.0.1:8000/api/menu-items/?ordering=price&page=2 
+
+18.	Customers can add menu items to the cart
+POST request to http://127.0.0.1:8000/api/cart/menu-items/ menu_item= lasagna, quantity=2
+
+19.	Customers can access previously added items in the cart
+
+20.	Customers can place orders
+POST request to http://127.0.0.1:8000/api/orders/ with token of user with non-empty cart
+
+21.	Customers can browse their own orders
+GET request to http://127.0.0.1:8000/api/orders/ 

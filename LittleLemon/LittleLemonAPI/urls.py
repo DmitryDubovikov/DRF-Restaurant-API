@@ -4,7 +4,7 @@ from LittleLemonAPI import views
 urlpatterns = [
     
     path('menu-items/', views.MenuItemsViewSet.as_view(
-        {'get': 'list', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}
+        {'get': 'list', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy', 'post': 'create'}
         )),
     
     path('menu-items/<int:pk>/', views.MenuItemsViewSet.as_view(
