@@ -9,7 +9,7 @@ class CategorySerializer(serializers.ModelSerializer):
         
 
 class MenuItemSerializer(serializers.ModelSerializer):
-    category = serializers.SlugRelatedField(queryset=Category.objects.all(), slug_field='title')                       
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())                      
     class Meta:
         model = MenuItem
         fields = ['id', 'title', 'price', 'featured', 'category']
@@ -23,14 +23,6 @@ class CartSerializer(serializers.ModelSerializer):
         fields = ['user', 'menuitem', 'quantity', 'unit_price', 'price']
  
         
-        
-# class UserSerializer(serializers.ModelSerializer):
-#     snippets = serializers.PrimaryKeyRelatedField(many=True, queryset=Snippet.objects.all())
-
-#     class Meta:
-#         model = User
-#         fields = ['id', 'username', 'snippets']
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -42,12 +34,17 @@ class GroupSerializer(serializers.ModelSerializer):
         model = Group
         fields = ['id', 'name']
         
-class OrderSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Order
-        fields = ['__all__']
-        
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
-        fields = ['__all__']
+        fields = ['order', 'menuitem', 'quantity', 'price']
+
+
+class OrderSerializer(serializers.ModelSerializer):
+
+    orderitem = OrderItemSerializer(many=True, read_only=True, source='order')
+
+    class Meta:
+        model = Order
+        fields = ['id', 'user', 'delivery_crew',
+                  'status', 'date', 'total', 'orderitem']

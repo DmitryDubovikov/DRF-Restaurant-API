@@ -1,28 +1,21 @@
 from django.urls import path
 from LittleLemonAPI import views
 
-urlpatterns = [
+urlpatterns = [   
     
-    path('menu-items/', views.MenuItemsViewSet.as_view(
-        {'get': 'list', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy', 'post': 'create'}
-        )),
+    path('menu-items', views.MenuItemsView.as_view()),
+    path('menu-items/<int:pk>', views.SingleMenuItemView.as_view()),
     
-    path('menu-items/<int:pk>/', views.MenuItemsViewSet.as_view(
-        {'get': 'list', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}
-        )),  
+    path('categories', views.CategoriesView.as_view()),
     
-    path('category/', views.CategoryViewSet.as_view({'get': 'list', 'post': 'create'})),
-    path('category/<int:pk>/', views.CategoryViewSet.as_view({'get': 'retrieve'})), 
+    path('cart/menu-items', views.CartView.as_view()),
     
-    path('groups/manager/users/', views.manager),
-    path('groups/manager/users/<int:pk>/', views.manager),
+    path('orders', views.OrderView.as_view()),
+    path('orders/<int:pk>', views.SingleOrderView.as_view()),
     
-    path('groups/delivery-crew/users/', views.delivery_crew),
-    path('groups/delivery-crew/users/<int:pk>/', views.delivery_crew),
+    path('groups/manager/users', views.GroupViewSet.as_view(
+        {'get': 'list', 'post': 'create', 'delete': 'destroy'})),
 
-    path('cart/menu-items/', views.cart),
-    
-    path('orders/', views.orders),
-    path('orders/<int:pk>/', views.order_detail),
-
+    path('groups/delivery-crew/users', views.DeliveryCrewViewSet.as_view(
+        {'get': 'list', 'post': 'create', 'delete': 'destroy'})) 
 ]
